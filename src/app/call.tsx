@@ -87,8 +87,9 @@ export default function CallScreen() {
   const partnerName = partner?.display_name || 'This person';
   const filterLabels = useMemo(() => [
     filters.country === 'Anywhere' ? 'Anywhere' : countryName(filters.country),
-    filters.gender === 'Anywhere' ? 'Everyone' : filters.gender === 'female' ? 'Women' : filters.gender === 'male' ? 'Men' : 'Other',
-  ], [filters, countryName]);
+    filters.gender === 'Anywhere' || call.searchInfo?.premium === false ? 'Everyone'
+      : filters.gender === 'female' ? 'Women' : filters.gender === 'male' ? 'Men' : 'Other',
+  ], [filters, countryName, call.searchInfo?.premium]);
 
   // ---- full-screen states ---------------------------------------------------------------------------
   if (call.phase === 'no_camera') {
@@ -186,7 +187,7 @@ export default function CallScreen() {
                 {call.phase === 'reconnecting' ? 'Reconnecting…' : call.phase === 'starting' ? 'Starting camera…' : 'Finding someone…'}
               </Text>
               <Text style={styles.searchSub}>
-                {call.searchInfo?.filtersIgnored ? 'Filters are a Premium feature, so we’re matching you with anyone.' : 'Matching you with someone online right now'}
+                {call.searchInfo?.filtersIgnored ? 'The gender filter is a Premium feature, so we’re matching you with everyone.' : 'Matching you with someone online right now'}
               </Text>
               <View style={{ flexDirection: 'row', gap: 10, marginTop: 18 }}>
                 {filterLabels.map((l) => <View key={l} style={styles.glassChip}><Text style={styles.glassChipText}>{l}</Text></View>)}
