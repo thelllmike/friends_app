@@ -224,6 +224,10 @@ export function useCall({ filters, onMatched, onEnded }: Opts) {
         break;
       case 'error':
         if (msg.code === 'maintenance') { wantQueue.current = false; setError(msg.message); setPhase('error'); }
+        else if (msg.code === 'server_busy') {
+          // Matchmaking was briefly overloaded: quietly search again after a short random delay.
+          setTimeout(() => { if (wantQueue.current && !matchRef.current) joinQueue(); }, 1000 + Math.random() * 2000);
+        }
         else if (msg.code === 'rate_limited' || msg.code === 'chat_disabled' || msg.code === 'chat_rate_limited') setError(msg.message);
         else setError(msg.message || 'Something went wrong');
         break;
