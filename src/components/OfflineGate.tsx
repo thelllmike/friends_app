@@ -6,6 +6,18 @@ import { WifiOff } from 'lucide-react-native';
 import { StateScreen } from './StateScreen';
 import { API_URL } from '@/lib/api';
 
+// Check reachability against our own server instead of NetInfo's default (a Google URL): no third-party
+// pings, and the check reflects whether Friends itself is usable. Generous timeouts so a slow mobile
+// connection isn't mistaken for "offline" mid-call.
+NetInfo.configure({
+  reachabilityUrl: `${API_URL}/health`,
+  reachabilityTest: async (r) => r.status === 200,
+  reachabilityRequestTimeout: 20_000,
+  reachabilityLongTimeout: 60_000,
+  reachabilityShortTimeout: 5_000,
+  useNativeReachability: false,
+});
+
 export function OfflineGate({ children }: { children: React.ReactNode }) {
   const [offline, setOffline] = useState(false);
   const [checking, setChecking] = useState(false);
