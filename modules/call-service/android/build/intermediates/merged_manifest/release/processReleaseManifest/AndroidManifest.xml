@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.friends.callservice" >
+
+    <uses-sdk android:minSdkVersion="24" />
+
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" />
+
+    <application>
+
+        <!--
+         Running while the call screen is open, so camera, mic and the connection keep working when
+         the user switches to another app. Shows an ongoing "Video chat in progress" notification.
+        -->
+        <service
+            android:name="com.friends.callservice.CallService"
+            android:exported="false"
+            android:foregroundServiceType="camera|microphone" />
+    </application>
+
+</manifest>

@@ -1,0 +1,9 @@
+com.friends.callservice.call-service-pngs-0 /Users/yuvin/Desktop/friends/mobile/modules/call-service/android/build/generated/res/pngs/release
+com.friends.callservice.call-service-updated_navigation_xml-1 /Users/yuvin/Desktop/friends/mobile/modules/call-service/android/build/generated/updated_navigation_xml/release
+com.friends.callservice.call-service-mergeReleaseResources-2 /Users/yuvin/Desktop/friends/mobile/modules/call-service/android/build/intermediates/incremental/release/mergeReleaseResources/merged.dir
+com.friends.callservice.call-service-mergeReleaseResources-3 /Users/yuvin/Desktop/friends/mobile/modules/call-service/android/build/intermediates/incremental/release/mergeReleaseResources/stripped.dir
+com.friends.callservice.call-service-release-4 /Users/yuvin/Desktop/friends/mobile/modules/call-service/android/build/intermediates/merged_res/release/mergeReleaseResources
+com.friends.callservice.call-service-release-5 /Users/yuvin/Desktop/friends/mobile/modules/call-service/android/build/intermediates/packaged_res/release/packageReleaseResources
+com.friends.callservice.call-service-main-6 /Users/yuvin/Desktop/friends/mobile/modules/call-service/android/src/main/res
+com.friends.callservice.call-service-release-7 /Users/yuvin/Desktop/friends/mobile/modules/call-service/android/src/release/res
+gradleHome-0 /Users/yuvin/.gradle

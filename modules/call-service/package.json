@@ -1,0 +1,7 @@
+{
+  "name": "call-service",
+  "version": "1.0.0",
+  "private": true,
+  "main": "src/index.ts",
+  "description": "Keeps a video call alive while the app is in the background (Android foreground service)."
+}

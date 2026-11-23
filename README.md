@@ -67,3 +67,11 @@ Remove it once you're on Xcode 26.4 or a newer Expo patch release.
 
 Notes: chat messages are not stored anywhere (the Chats tab is a list of recent people kept on the
 phone only). Premium is bought only in the native apps; the web build shows plans read-only.
+
+## Calls in the background
+
+Switching to another app doesn't end a call. `modules/call-service` is a small local Expo module: on
+Android it runs a foreground service (type camera|microphone) with an ongoing "Video chat in progress"
+notification while the call screen is open, so camera, mic and the connection keep working. iOS keeps
+the audio running via the `audio` background mode (iOS pauses the camera in the background). On the
+web, hidden tabs keep running.
