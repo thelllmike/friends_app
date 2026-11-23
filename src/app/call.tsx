@@ -1,7 +1,7 @@
 // Searching (08), Video call (09), In-call chat (11), Report (10), No users (16), Partner left (17), No camera (14).
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  Animated, Easing, FlatList, KeyboardAvoidingView, Linking, Platform, Pressable, StyleSheet, Text, TextInput, View,
+  ActivityIndicator, Animated, Easing, FlatList, KeyboardAvoidingView, Linking, Platform, Pressable, StyleSheet, Text, TextInput, View,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -61,6 +61,8 @@ function CtrlButton({ onPress, label, children, active = true, danger }: { onPre
   );
 }
 
+const AUTO_NEXT_MS = 2000;
+
 export default function CallScreen() {
   const router = useRouter();
   const { filters, countryName, addRecent, updateRecent } = useMatch();
@@ -72,6 +74,18 @@ export default function CallScreen() {
   const [chatOpen, setChatOpen] = useState(false);
   const [draft, setDraft] = useState('');
   const [reportOpen, setReportOpen] = useState<null | 'live' | 'ended'>(null);
+  // When the partner skips/leaves, search again automatically after a short pause, unless the user
+  // tapped Stop or is filling in a report (it resumes when the report sheet closes).
+  // Stop applies to this one ended call (keyed by its room), so the next one auto-advances again.
+  const [stoppedRoom, setStoppedRoom] = useState<string | null>(null);
+  const endedRoom = call.lastEnded?.roomId ?? null;
+  const autoNextStopped = stoppedRoom !== null && stoppedRoom === endedRoom;
+  const setAutoNextStopped = (_: true) => setStoppedRoom(endedRoom ?? 'none');
+  useEffect(() => {
+    if (call.phase !== 'partner_left' || autoNextStopped || reportOpen) return;
+    const t = setTimeout(() => call.joinQueue(), AUTO_NEXT_MS);
+    return () => clearTimeout(t);
+  }, [call.phase, autoNextStopped, reportOpen]); // eslint-disable-line react-hooks/exhaustive-deps
   const seconds = useTimer(call.connectedAt);
   const listRef = useRef<FlatList>(null);
 
@@ -254,9 +268,21 @@ export default function CallScreen() {
           <View style={styles.leftCard}>
             <View style={styles.leftIcon}><LogOut size={26} color="#F0A030" /></View>
             <T v="h2" style={{ textAlign: 'center', marginTop: 18 }} accessibilityRole="header">{partnerName} left the chat</T>
-            <T style={{ textAlign: 'center', color: colors.muted, fontSize: 14, marginTop: 8, marginBottom: 22 }}>Connections drop sometimes. Ready to meet someone new?</T>
-            <Button testID="find-next" title="Find next" onPress={call.joinQueue} />
-            <Button title="Back to home" kind="secondary" onPress={exit} style={{ marginTop: 10 }} />
+            {autoNextStopped ? (
+              <>
+                <T style={{ textAlign: 'center', color: colors.muted, fontSize: 14, marginTop: 8, marginBottom: 22 }}>Ready to meet someone new?</T>
+                <Button testID="find-next" title="Find next" onPress={call.joinQueue} />
+                <Button title="Back to home" kind="secondary" onPress={exit} style={{ marginTop: 10 }} />
+              </>
+            ) : (
+              <>
+                <View style={styles.autoNextRow} accessibilityLiveRegion="polite">
+                  <ActivityIndicator size="small" color={colors.blue} />
+                  <T style={{ color: colors.muted, fontSize: 14 }}>Finding someone new…</T>
+                </View>
+                <Button testID="auto-next-stop" title="Stop" kind="secondary" onPress={() => setAutoNextStopped(true)} />
+              </>
+            )}
             {call.lastEnded ? (
               <Pressable onPress={() => setReportOpen('ended')} style={styles.reportLink} accessibilityRole="button">
                 <Flag size={14} color={colors.muted} /><Text style={styles.reportLinkText}>Report this user</Text>
@@ -322,6 +348,7 @@ const styles = StyleSheet.create({
   leftScrim: { backgroundColor: 'rgba(8,16,40,0.55)', justifyContent: 'center', paddingHorizontal: 20, zIndex: 10 },
   leftCard: { backgroundColor: '#fff', borderRadius: 28, padding: 24, ...shadow.card },
   leftIcon: { width: 64, height: 64, borderRadius: 32, backgroundColor: '#FFF1DE', alignSelf: 'center', alignItems: 'center', justifyContent: 'center' },
+  autoNextRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, marginTop: 10, marginBottom: 22 },
   reportLink: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 18 },
   reportLinkText: { color: colors.muted, fontFamily: font.medium, fontSize: 13 },
 });
