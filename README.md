@@ -61,5 +61,9 @@ src/lib/            api client + token refresh, auth, match prefs, sign-in, purc
 
 Checks: `npx tsc --noEmit` and `npx expo lint`.
 
+**Xcode version:** Expo SDK 58 expects Xcode 26.4+. To also build with Xcode 26.2, `patches/` holds a
+one-line fix for `expo-modules-jsi` that `patch-package` applies automatically after `npm install`.
+Remove it once you're on Xcode 26.4 or a newer Expo patch release.
+
 Notes: chat messages are not stored anywhere (the Chats tab is a list of recent people kept on the
 phone only). Premium is bought only in the native apps; the web build shows plans read-only.
