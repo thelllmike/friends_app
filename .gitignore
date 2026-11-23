@@ -43,3 +43,7 @@ yarn-error.*
 # secrets
 .env
 .claude/settings.local.json
+
+# local native module build output
+modules/*/android/build/
+modules/*/android/.cxx/
