@@ -1,4 +1,4 @@
-// Match filters (premium) + local "recent people" history + public data (countries, online count).
+// Match filters (country free, gender premium) + local "recent people" history + public data (countries, online count).
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { api } from './api';
 import { prefs } from './storage';

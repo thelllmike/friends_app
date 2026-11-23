@@ -72,8 +72,8 @@ export default function HomeScreen() {
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 10, paddingRight: 24 }}>
             <Chip label="Anywhere" selected={anywhere} icon={<Globe size={15} color={anywhere ? colors.blue : colors.text} />}
               onPress={() => setFilters({ country: 'Anywhere', gender: 'Anywhere' })} />
-            <Chip label={filters.country !== 'Anywhere' ? countryName(filters.country) : 'Country'} locked={!premium}
-              selected={filters.country !== 'Anywhere'} onPress={() => (premium ? setCountryOpen(true) : router.push('/premium'))} />
+            <Chip label={filters.country !== 'Anywhere' ? countryName(filters.country) : 'Country'}
+              selected={filters.country !== 'Anywhere'} onPress={() => setCountryOpen(true)} />
             <Chip label={filters.gender !== 'Anywhere' ? genderLabel || 'Gender' : 'Gender'} locked={!premium}
               selected={filters.gender !== 'Anywhere'} onPress={() => (premium ? setGenderOpen(true) : router.push('/premium'))} />
           </ScrollView>

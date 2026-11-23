@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Linking, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Check, Crown, Globe, Lock, Users, X, Zap } from 'lucide-react-native';
+import { Check, Crown, Lock, Users, X, Zap } from 'lucide-react-native';
 import { Button, IconButton, Screen, T } from '@/components/ui';
 import { toast } from '@/components/Toast';
 import { api } from '@/lib/api';
@@ -16,7 +16,6 @@ type Plan = { code: string; name: string; duration_days: number; price_cents: nu
 type Feature = { id: string; title: string; description: string };
 const FEATURE_ICONS: Record<string, { Icon: any; tint: string; bg: string }> = {
   gender_filter: { Icon: Users, tint: colors.blue, bg: colors.blueSoft },
-  country_filter: { Icon: Globe, tint: colors.blue, bg: colors.blueSoft },
   priority_matching: { Icon: Zap, tint: colors.success, bg: 'rgba(31,169,113,0.12)' },
 };
 
@@ -85,12 +84,12 @@ export default function Premium() {
           <LinearGradient colors={gradient.premium} style={[styles.crown, shadow.card]}><Crown size={32} color="#7A4A00" /></LinearGradient>
           <T v="h1" style={{ marginTop: 18 }} accessibilityRole="header">{me?.is_premium ? 'You’re Premium' : 'Go Premium'}</T>
           <T style={{ color: colors.muted, marginTop: 6, fontSize: 15, textAlign: 'center' }}>
-            {me?.is_premium && me.premium_until ? `Active until ${new Date(me.premium_until).toLocaleDateString()}` : 'Choose who you meet with filters.'}
+            {me?.is_premium && me.premium_until ? `Active until ${new Date(me.premium_until).toLocaleDateString()}` : 'Choose who you meet and match faster.'}
           </T>
         </View>
 
         <View style={styles.features}>
-          {(features.length ? features : [{ id: 'gender_filter', title: 'Gender filter', description: '' }, { id: 'country_filter', title: 'Country filter', description: '' }, { id: 'priority_matching', title: 'Priority matching', description: '' }]).map((f, i) => {
+          {(features.length ? features : [{ id: 'gender_filter', title: 'Gender filter', description: '' }, { id: 'priority_matching', title: 'Priority matching', description: '' }]).map((f, i) => {
             const ic = FEATURE_ICONS[f.id] || FEATURE_ICONS.gender_filter;
             return (
               <View key={f.id} style={[styles.feature, i > 0 && { borderTopWidth: 1, borderTopColor: colors.border }]}>

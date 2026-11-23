@@ -309,8 +309,11 @@ export function useCall({ filters, onMatched, onEnded }: Opts) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Leaving the app ends the call (we can't keep the camera running in the background).
+  // Leaving the app ends the call on phones (the OS suspends the camera and the app in the background).
+  // On the web a hidden tab keeps the camera, audio and connection running, so switching tabs must
+  // not end the call.
   useEffect(() => {
+    if (Platform.OS === 'web') return;
     const sub = AppState.addEventListener('change', (st) => {
       if (st === 'background' && matchRef.current) {
         send({ type: 'leave' });
