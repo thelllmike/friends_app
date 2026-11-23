@@ -5,12 +5,13 @@
 //                         -> no_users
 //   any -> reconnecting (socket dropped) | banned | replaced | error
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { AppState, Platform } from 'react-native';
+import { Platform } from 'react-native';
 import { api, refreshAccess, tokens, WS_URL } from '@/lib/api';
 import { Filters, Partner } from '@/lib/match';
 import {
   getLocalStream, MediaStream, RTCIceCandidate, RTCPeerConnection, RTCSessionDescription, stopStream, switchCamera as rtcSwitch,
 } from './rtc';
+import { startCallService, stopCallService } from '../../modules/call-service/src';
 
 export type Phase = 'starting' | 'no_camera' | 'searching' | 'no_users' | 'matched' | 'partner_left' | 'reconnecting'
   | 'banned' | 'replaced' | 'error';
@@ -309,21 +310,13 @@ export function useCall({ filters, onMatched, onEnded }: Opts) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Leaving the app ends the call on phones (the OS suspends the camera and the app in the background).
-  // On the web a hidden tab keeps the camera, audio and connection running, so switching tabs must
-  // not end the call.
+  // Switching to another app (or browser tab) keeps the call going. On Android a foreground service
+  // with an ongoing notification keeps camera, mic and the connection alive while the call screen is
+  // open; iOS keeps audio via the "audio" background mode; browsers keep hidden tabs running.
   useEffect(() => {
-    if (Platform.OS === 'web') return;
-    const sub = AppState.addEventListener('change', (st) => {
-      if (st === 'background' && matchRef.current) {
-        send({ type: 'leave' });
-        finishMatch();
-        wantQueue.current = false;
-        setPhase('partner_left');
-      }
-    });
-    return () => sub.remove();
-  }, [finishMatch, send]);
+    if (Platform.OS === 'android') startCallService();
+    return () => stopCallService();
+  }, []);
 
   // ---- user actions ---------------------------------------------------------------------------------
   const next = useCallback(() => {
