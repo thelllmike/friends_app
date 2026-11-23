@@ -11,6 +11,7 @@ import { API_URL } from '@/lib/api';
 // connection isn't mistaken for "offline" mid-call.
 NetInfo.configure({
   reachabilityUrl: `${API_URL}/health`,
+  reachabilityMethod: 'GET', // NetInfo defaults to HEAD; /health is a plain GET endpoint
   reachabilityTest: async (r) => r.status === 200,
   reachabilityRequestTimeout: 20_000,
   reachabilityLongTimeout: 60_000,
